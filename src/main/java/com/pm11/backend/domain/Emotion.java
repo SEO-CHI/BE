@@ -16,7 +16,7 @@ import lombok.Setter;
 public class Emotion {
 
     @Id
-    @Column(length = 64, nullable = false)
+    @Column(length = 36, nullable = false)
     private String id;
 
     @Column(nullable = false, length = 100)

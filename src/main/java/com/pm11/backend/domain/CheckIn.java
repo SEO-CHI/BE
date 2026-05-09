@@ -20,7 +20,7 @@ import lombok.Setter;
 public class CheckIn {
 
     @Id
-    @Column(length = 64, nullable = false)
+    @Column(length = 36, nullable = false)
     private String id;
 
     /** 비회원 체크인 시 {@code null} (FK {@code user_id} 미설정) */

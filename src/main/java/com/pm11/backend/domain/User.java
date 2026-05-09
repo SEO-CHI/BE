@@ -22,7 +22,7 @@ import lombok.Setter;
 public class User {
 
     @Id
-    @Column(length = 64, nullable = false)
+    @Column(length = 36, nullable = false)
     private String id;
 
     @Enumerated(EnumType.STRING)

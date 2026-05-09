@@ -26,7 +26,7 @@ import lombok.Setter;
 public class Recommendation {
 
     @Id
-    @Column(length = 64, nullable = false)
+    @Column(length = 36, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
