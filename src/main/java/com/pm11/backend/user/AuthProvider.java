@@ -1,4 +1,4 @@
-package com.pm11.backend.domain;
+package com.pm11.backend.user;
 
 public enum AuthProvider {
     google,
