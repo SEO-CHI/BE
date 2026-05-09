@@ -1,0 +1,83 @@
+### Private documentation
+private-docs/
+
+### Markdown
+**/*.md
+
+### Local-only Markdown viewer
+/src/main/java/com/pm11/backend/MarkdownViewerController.java
+/gradle/markdown-viewer.local.gradle
+
+### Gradle / build (Spring Boot)
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+### Environment & secrets (Railway uses dashboard env vars; keep these local only)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
+
+### Spring Boot local overrides
+application-local.properties
+application-secret.properties
+application-*.local.properties
+**/application-local.properties
+**/application-secret.properties
+
+### Logs & temp
+*.log
+logs/
+tmp/
+temp/
+
+### OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+### Local tooling / data (credentials, machine paths)
+script.py
+*.csv
+data/
+
+### Railway CLI local link (if present)
+.railway/
