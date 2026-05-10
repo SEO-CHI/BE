@@ -1,6 +1,7 @@
 package com.pm11.backend.place;
 
 import com.pm11.backend.ApiException;
+import com.pm11.backend.place.opennow.OpenNowService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PlaceService {
 
     private final PlaceRepository placeRepository;
+    private final OpenNowService openNowService;
 
     @Transactional(readOnly = true)
     public Place getById(Integer id) {
@@ -18,11 +20,8 @@ public class PlaceService {
                 .orElseThrow(() -> ApiException.notFound("장소를 찾을 수 없습니다."));
     }
 
-    /**
-     * 운영시간 파싱은 추후 도입. 현재는 운영 정보가 있고 장소 데이터가 살아있으면 true 로 단순 처리.
-     * TODO: operating_rules / closed_rules 기반 시간 판정.
-     */
+    /** {@code operating_rules} / {@code closed_rules} JSON과 서울 기준 현재 시각·공휴일 스냅샷으로 판정. */
     public boolean isOpenNow(Place place) {
-        return place.getOperatingHours() != null;
+        return openNowService.isOpenNow(place);
     }
 }
