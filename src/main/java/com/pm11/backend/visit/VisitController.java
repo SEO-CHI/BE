@@ -1,8 +1,11 @@
 package com.pm11.backend.visit;
 
 import com.pm11.backend.auth.AuthSupport;
+import com.pm11.backend.visit.dto.CreateVisitRequest;
+import com.pm11.backend.visit.dto.CreateVisitResponse;
+import com.pm11.backend.visit.dto.UpdateRatingRequest;
+import com.pm11.backend.visit.dto.UpdateRatingResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -38,12 +41,4 @@ public class VisitController {
         Visit visit = visitService.updateRating(userId, visitId, body.rating());
         return new UpdateRatingResponse(visit.getId(), visit.getRating());
     }
-
-    public record CreateVisitRequest(Integer place_id) {}
-
-    public record CreateVisitResponse(String visit_id, Integer place_id, Instant visited_at, Integer rating) {}
-
-    public record UpdateRatingRequest(Integer rating) {}
-
-    public record UpdateRatingResponse(String visit_id, Integer rating) {}
 }

@@ -1,7 +1,10 @@
 package com.pm11.backend.recommendation;
 
 import com.pm11.backend.auth.AuthSupport;
-import com.pm11.backend.place.Place;
+import com.pm11.backend.recommendation.dto.RecommendationItemResponse;
+import com.pm11.backend.recommendation.dto.RecommendationListFiltersResponse;
+import com.pm11.backend.recommendation.dto.RecommendationListPageResponse;
+import com.pm11.backend.recommendation.dto.RecommendationListResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -38,72 +41,20 @@ public class RecommendationController {
         RecommendationService.Result result =
                 recommendationService.recommend(checkInId, filters, memberAuthorized);
 
-        List<Item> items = result.items().stream()
-                .map(it -> Item.of(it.place(), it.distanceM(), it.walkMinutes(), it.isOpenNow(), it.reason()))
+        List<RecommendationItemResponse> items = result.items().stream()
+                .map(it -> RecommendationItemResponse.of(
+                        it.place(), it.distanceM(), it.walkMinutes(), it.isOpenNow(), it.reason()))
                 .toList();
 
         return new RecommendationListResponse(
                 result.checkIn().getId(),
-                new Filters(
+                new RecommendationListFiltersResponse(
                         filters.fee(),
                         filters.placeType(),
                         filters.radiusM(),
                         filters.maxWalkMinutes(),
                         filters.sort()),
                 items,
-                new Page(filters.limit(), result.nextCursor(), result.hasMore()));
-    }
-
-    public record RecommendationListResponse(
-            String check_in_id, Filters filters, List<Item> items, Page page) {}
-
-    public record Filters(
-            String fee, String place_type, int radius_m, int max_walk_time_min, String sort) {}
-
-    public record Page(int limit, String next_cursor, boolean has_more) {}
-
-    public record Item(
-            Integer place_id,
-            String name,
-            String category,
-            Boolean is_indoor,
-            Boolean is_free,
-            Boolean needs_reservation,
-            String address,
-            Double latitude,
-            Double longitude,
-            String external_url,
-            String phone_number,
-            String operating_hours,
-            String closed_days,
-            String note,
-            String price,
-            double distance_m,
-            int walk_minutes,
-            boolean is_open_now,
-            String reason) {
-
-        static Item of(Place p, double distance, int walkMinutes, boolean openNow, String reason) {
-            return new Item(
-                    p.getId(),
-                    p.getName(),
-                    p.getCategory(),
-                    p.getIndoor(),
-                    p.getFree(),
-                    p.getNeedsReservation(),
-                    p.getAddress(),
-                    p.getLatitude(),
-                    p.getLongitude(),
-                    p.getExternalUrl(),
-                    p.getPhoneNumber(),
-                    p.getOperatingHours(),
-                    p.getClosedDays(),
-                    p.getNote(),
-                    p.getPrice(),
-                    distance,
-                    walkMinutes,
-                    openNow,
-                    reason);
-        }
+                new RecommendationListPageResponse(filters.limit(), result.nextCursor(), result.hasMore()));
     }
 }

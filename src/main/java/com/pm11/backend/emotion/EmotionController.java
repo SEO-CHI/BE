@@ -1,5 +1,7 @@
 package com.pm11.backend.emotion;
 
+import com.pm11.backend.emotion.dto.EmotionItemResponse;
+import com.pm11.backend.emotion.dto.EmotionListResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,13 +17,9 @@ public class EmotionController {
 
     @GetMapping
     public EmotionListResponse list() {
-        List<EmotionItem> items = emotionService.findAll().stream()
-                .map(e -> new EmotionItem(e.getId(), e.getName()))
+        List<EmotionItemResponse> items = emotionService.findAll().stream()
+                .map(e -> new EmotionItemResponse(e.getId(), e.getName()))
                 .toList();
         return new EmotionListResponse(items);
     }
-
-    public record EmotionListResponse(List<EmotionItem> emotions) {}
-
-    public record EmotionItem(String emotion_id, String name) {}
 }
