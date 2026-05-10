@@ -23,7 +23,7 @@ public record RecommendationFilters(
                 fee == null ? "all" : fee,
                 placeType == null ? "all" : placeType,
                 radiusM == null ? 0 : radiusM,
-                maxWalkMinutes == null ? 60 : maxWalkMinutes,
+                maxWalkMinutes == null ? 0 : maxWalkMinutes,
                 sort == null ? "distance_asc" : sort,
                 limit == null || limit <= 0 ? 30 : limit,
                 parseCursor(cursor));
