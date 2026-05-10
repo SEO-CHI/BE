@@ -14,10 +14,11 @@ public class AuthService {
 
     private final UserService userService;
     private final TokenStore tokenStore;
+    private final GoogleIdTokenVerificationService googleIdTokenVerificationService;
 
     /**
-     * 소셜 로그인. 외부 OIDC/OAuth 검증은 단순화해 id_token 문자열을 그대로 provider 사용자 식별자로 사용한다.
-     * TODO: 운영 환경에서는 google/kakao 토큰 검증 절차 추가.
+     * 소셜 로그인. {@code google}은 Google ID 토큰을 검증한 뒤 {@code sub}를 provider 사용자 식별자로 쓴다.
+     * 기타 provider는 단순화된 연동을 위해 토큰 문자열을 그대로 식별자로 사용한다.
      */
     @Transactional
     public LoginResult socialLogin(String providerName, String idToken, String accessToken) {
@@ -29,6 +30,13 @@ public class AuthService {
             provider = AuthProvider.valueOf(providerName.toLowerCase());
         } catch (IllegalArgumentException e) {
             throw ApiException.badRequest("지원하지 않는 provider 입니다.");
+        }
+
+        if (provider == AuthProvider.google) {
+            GoogleIdTokenVerificationService.Verified verified = googleIdTokenVerificationService.verify(idToken);
+            User user = userService.findOrCreate(provider, verified.subject(), verified.email());
+            TokenStore.Issued issued = tokenStore.issue(user.getId());
+            return new LoginResult(user, issued);
         }
 
         String providerId = idToken != null && !idToken.isBlank()
