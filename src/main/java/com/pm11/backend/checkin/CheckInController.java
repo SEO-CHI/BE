@@ -1,6 +1,8 @@
 package com.pm11.backend.checkin;
 
 import com.pm11.backend.auth.AuthSupport;
+import com.pm11.backend.checkin.dto.CreateCheckInRequest;
+import com.pm11.backend.checkin.dto.CreateCheckInResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,8 +27,4 @@ public class CheckInController {
         CheckIn checkIn = checkInService.create(userId, body.emotion_id(), body.latitude(), body.longitude());
         return new CreateCheckInResponse(checkIn.getId());
     }
-
-    public record CreateCheckInRequest(String emotion_id, Double latitude, Double longitude) {}
-
-    public record CreateCheckInResponse(String check_in_id) {}
 }

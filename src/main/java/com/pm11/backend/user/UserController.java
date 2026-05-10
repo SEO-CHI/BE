@@ -2,6 +2,7 @@ package com.pm11.backend.user;
 
 import com.pm11.backend.auth.AuthSupport;
 import com.pm11.backend.auth.TokenStore;
+import com.pm11.backend.user.dto.DeleteMeResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,4 @@ public class UserController {
         tokenStore.revokeAllForUser(userId);
         return new DeleteMeResponse(userId, deletedAt);
     }
-
-    public record DeleteMeResponse(String user_id, Instant deleted_at) {}
 }

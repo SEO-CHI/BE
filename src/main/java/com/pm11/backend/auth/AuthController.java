@@ -1,8 +1,15 @@
 package com.pm11.backend.auth;
 
+import com.pm11.backend.auth.dto.LogoutRequest;
+import com.pm11.backend.auth.dto.LogoutResponse;
+import com.pm11.backend.auth.dto.RefreshRequest;
+import com.pm11.backend.auth.dto.RefreshResponse;
+import com.pm11.backend.auth.dto.SocialLoginRequest;
+import com.pm11.backend.auth.dto.SocialLoginResponse;
+import com.pm11.backend.auth.dto.Tokens;
+import com.pm11.backend.auth.dto.UserInfo;
 import com.pm11.backend.user.User;
 import jakarta.servlet.http.HttpServletRequest;
-import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,20 +48,4 @@ public class AuthController {
         authService.logout(request.refresh_token());
         return new LogoutResponse(true);
     }
-
-    public record SocialLoginRequest(String provider, String id_token, String access_token) {}
-
-    public record SocialLoginResponse(UserInfo user, Tokens tokens) {}
-
-    public record RefreshRequest(String refresh_token) {}
-
-    public record RefreshResponse(Tokens tokens) {}
-
-    public record LogoutRequest(String refresh_token) {}
-
-    public record LogoutResponse(boolean success) {}
-
-    public record UserInfo(String user_id, String provider, Instant created_at) {}
-
-    public record Tokens(String access_token, String refresh_token, String token_type, long expires_in) {}
 }
