@@ -51,6 +51,9 @@ public class Place {
     @Column(name = "phone_number", length = 20)
     private String phoneNumber;
 
+    @Column(columnDefinition = "TEXT")
+    private String price;
+
     @Column(name = "operating_hours", columnDefinition = "TEXT")
     private String operatingHours;
 
