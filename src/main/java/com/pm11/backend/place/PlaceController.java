@@ -34,6 +34,7 @@ public class PlaceController {
             String operating_hours,
             String closed_days,
             String note,
+            String price,
             boolean is_open_now,
             String reason) {
 
@@ -53,6 +54,7 @@ public class PlaceController {
                     p.getOperatingHours(),
                     p.getClosedDays(),
                     p.getNote(),
+                    p.getPrice(),
                     openNow,
                     reason);
         }
