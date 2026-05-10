@@ -154,7 +154,7 @@ class ApiV1IntegrationTest {
                 .andExpect(jsonPath("$.filters.fee").value("all"))
                 .andExpect(jsonPath("$.filters.place_type").value("all"))
                 .andExpect(jsonPath("$.filters.radius_m").value(0))
-                .andExpect(jsonPath("$.filters.max_walk_time_min").value(60))
+                .andExpect(jsonPath("$.filters.max_walk_time_min").value(0))
                 .andExpect(jsonPath("$.filters.sort").value("distance_asc"))
                 .andExpect(jsonPath("$.items").isArray())
                 .andExpect(jsonPath("$.items[0].place_id").value(167))
