@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,7 @@ public class RecommendationService {
     private final CheckInService checkInService;
     private final PlaceRepository placeRepository;
     private final PlaceService placeService;
+    private final EntityManager entityManager;
 
     @Transactional(readOnly = true)
     public Result recommend(String checkInId, RecommendationFilters filters, boolean memberAuthorized) {
@@ -75,6 +77,8 @@ public class RecommendationService {
                 .toList();
 
         String nextCursor = hasMore ? String.valueOf(to) : null;
+        entityManager.flush();
+        entityManager.clear();
         return new Result(checkIn, enriched, hasMore, nextCursor);
     }
 
