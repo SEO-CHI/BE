@@ -1,6 +1,7 @@
 package com.pm11.backend.recommendation;
 
 import com.pm11.backend.place.Place;
+import com.pm11.backend.place.dto.PlaceScanRow;
 
 public record RecommendationFilters(
         String fee,
@@ -39,11 +40,19 @@ public record RecommendationFilters(
     }
 
     public boolean matches(Place place, double distanceM, int walkMinutes) {
+        return matches(place.getFree(), place.getIndoor(), distanceM, walkMinutes);
+    }
+
+    public boolean matches(PlaceScanRow place, double distanceM, int walkMinutes) {
+        return matches(place.free(), place.indoor(), distanceM, walkMinutes);
+    }
+
+    private boolean matches(Boolean free, Boolean indoor, double distanceM, int walkMinutes) {
         if (radiusM > 0 && distanceM > radiusM) return false;
         if (maxWalkMinutes > 0 && walkMinutes > maxWalkMinutes) return false;
-        if ("free".equalsIgnoreCase(fee) && Boolean.FALSE.equals(place.getFree())) return false;
-        if ("indoor".equalsIgnoreCase(placeType) && !Boolean.TRUE.equals(place.getIndoor())) return false;
-        if ("outdoor".equalsIgnoreCase(placeType) && Boolean.TRUE.equals(place.getIndoor())) return false;
+        if ("free".equalsIgnoreCase(fee) && Boolean.FALSE.equals(free)) return false;
+        if ("indoor".equalsIgnoreCase(placeType) && !Boolean.TRUE.equals(indoor)) return false;
+        if ("outdoor".equalsIgnoreCase(placeType) && Boolean.TRUE.equals(indoor)) return false;
         return true;
     }
 }

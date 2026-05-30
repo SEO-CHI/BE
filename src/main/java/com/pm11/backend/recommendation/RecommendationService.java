@@ -5,9 +5,13 @@ import com.pm11.backend.checkin.CheckInService;
 import com.pm11.backend.place.Place;
 import com.pm11.backend.place.PlaceRepository;
 import com.pm11.backend.place.PlaceService;
+import com.pm11.backend.place.dto.PlaceScanRow;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,22 +32,23 @@ public class RecommendationService {
     private final CheckInService checkInService;
     private final PlaceRepository placeRepository;
     private final PlaceService placeService;
+    private final EntityManager entityManager;
 
     @Transactional(readOnly = true)
     public Result recommend(String checkInId, RecommendationFilters filters, boolean memberAuthorized) {
         CheckIn checkIn = checkInService.getById(checkInId);
 
-        List<Place> all = placeRepository.findAll();
-        List<Item> items = all.stream()
-                .filter(p -> p.getLatitude() != null && p.getLongitude() != null)
+        List<PlaceScanRow> scanRows = placeRepository.findAllScanForRecommendation();
+        List<Item> items = scanRows.stream()
+                .filter(p -> p.latitude() != null && p.longitude() != null)
                 .map(p -> {
                     double distance = haversine(
                             checkIn.getLatitude(), checkIn.getLongitude(),
-                            p.getLatitude(), p.getLongitude());
+                            p.latitude(), p.longitude());
                     int walk = (int) Math.ceil(distance / WALK_SPEED_M_PER_MIN);
                     return new Item(p, distance, walk);
                 })
-                .filter(it -> filters.matches(it.place(), it.distanceM(), it.walkMinutes()))
+                .filter(it -> filters.matches(it.scan(), it.distanceM(), it.walkMinutes()))
                 .sorted(Comparator.comparingDouble(Item::distanceM))
                 .toList();
 
@@ -56,12 +61,24 @@ public class RecommendationService {
                 ? EMOTION_REASON.getOrDefault(checkIn.getEmotion().getName(), "도움이 될 수 있어요.")
                 : null;
 
+        List<Integer> pageIds = page.stream().map(it -> it.scan().id()).toList();
+        Map<Integer, Place> placeById = placeRepository.findAllById(pageIds).stream()
+                .collect(Collectors.toMap(Place::getId, Function.identity()));
+
         List<Enriched> enriched = page.stream()
-                .map(it -> new Enriched(it.place(), it.distanceM(), it.walkMinutes(),
-                        placeService.isOpenNow(it.place()), reason))
+                .map(it -> {
+                    Place place = placeById.get(it.scan().id());
+                    if (place == null) {
+                        throw new IllegalStateException("Place not found for id=" + it.scan().id());
+                    }
+                    return new Enriched(
+                            place, it.distanceM(), it.walkMinutes(), placeService.isOpenNow(place), reason);
+                })
                 .toList();
 
         String nextCursor = hasMore ? String.valueOf(to) : null;
+        entityManager.flush();
+        entityManager.clear();
         return new Result(checkIn, enriched, hasMore, nextCursor);
     }
 
@@ -76,7 +93,7 @@ public class RecommendationService {
         return R * c;
     }
 
-    public record Item(Place place, double distanceM, int walkMinutes) {}
+    public record Item(PlaceScanRow scan, double distanceM, int walkMinutes) {}
 
     public record Enriched(Place place, double distanceM, int walkMinutes, boolean isOpenNow, String reason) {}
 
