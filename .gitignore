@@ -81,3 +81,6 @@ data/
 
 ### Railway CLI local link (if present)
 .railway/
+
+### Cursor
+.cursor/
