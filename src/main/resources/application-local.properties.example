@@ -1,0 +1,14 @@
+# MySQL 로컬 개발용 설정 템플릿
+# 1. 이 파일을 application-local.properties 로 복사
+# 2. DB 접속 정보와 GOOGLE_CLIENT_ID 를 본인 환경에 맞게 수정
+# 3. ./gradlew bootRun (기본 프로필 local)
+
+spring.datasource.url=jdbc:mysql://localhost:3306/seochi_db
+spring.datasource.username=YOUR_MYSQL_USER
+spring.datasource.password=YOUR_MYSQL_PASSWORD
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+spring.jpa.hibernate.ddl-auto=validate
+spring.jpa.show-sql=true
+
+pm11.auth.google.web-client-id=${GOOGLE_CLIENT_ID:}

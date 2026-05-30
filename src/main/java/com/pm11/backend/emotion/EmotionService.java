@@ -21,7 +21,8 @@ public class EmotionService {
     @PostConstruct
     @Transactional
     public void seedIfEmpty() {
-        if (Arrays.asList(environment.getActiveProfiles()).contains("test")) {
+        if (Arrays.asList(environment.getActiveProfiles()).contains("test")
+                || Arrays.asList(environment.getActiveProfiles()).contains("demo")) {
             return;
         }
         if (emotionRepository.count() > 0) {
