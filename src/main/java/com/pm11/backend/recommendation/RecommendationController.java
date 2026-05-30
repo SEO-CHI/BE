@@ -5,6 +5,8 @@ import com.pm11.backend.recommendation.dto.RecommendationItemResponse;
 import com.pm11.backend.recommendation.dto.RecommendationListFiltersResponse;
 import com.pm11.backend.recommendation.dto.RecommendationListPageResponse;
 import com.pm11.backend.recommendation.dto.RecommendationListResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/v1/check-ins")
 @RequiredArgsConstructor
+@Tag(name = "recommendation", description = "장소 추천")
 public class RecommendationController {
 
     private final RecommendationService recommendationService;
     private final AuthSupport authSupport;
 
     @GetMapping("/{check_in_id}/recommendations")
+    @Operation(summary = "체크인 기반 장소 추천", description = "Bearer 토큰이 있으면 회원용 추천 결과를 반환합니다.")
     public RecommendationListResponse list(
             HttpServletRequest request,
             @PathVariable("check_in_id") String checkInId,
